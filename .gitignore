@@ -138,8 +138,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-
-!/espnFFdata
-!/alembic.ini
-
-.DS_Store
+alembic.ini
+alembic/
+espnFFdata
