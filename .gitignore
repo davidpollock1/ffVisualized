@@ -142,3 +142,4 @@ alembic.ini
 alembic/
 espnFFdata
 **/.DS_Store
+.idea/
