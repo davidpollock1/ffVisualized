@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv('.env')
+
+
 # class to build league and load in DB.
 class league_loader:
     def __init__(self, league_id, year, espn_s2, swid):
@@ -86,7 +88,7 @@ class league_loader:
         current_week = self.league.current_week
 
         for k in range(current_week):
-            week = k+1
+            week = k + 1
             box_scores = self.league.box_scores(week)
 
             self.add_player_stats(box_scores, week, num_matchups)
