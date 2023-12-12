@@ -6,11 +6,11 @@ from sqlalchemy.orm import sessionmaker
 
 from models import Base
 
-database_name = "espnFFdata"
+database_name = "db/espnFFdata"
 
 try:
     db_url = f"sqlite:///{database_name}"
-    engine = create_engine(db_url, echo=True)
+    engine = create_engine(db_url) # echo=True
     Base.metadata.create_all(engine)
 except OperationalError as err:
     logging.error("Cannot connect to DB %s", err)

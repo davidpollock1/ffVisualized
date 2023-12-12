@@ -7,7 +7,7 @@ from espn_api.football import League as EspnLeague
 from dotenv import load_dotenv
 import os
 
-load_dotenv('.env')
+load_dotenv('../.env')
 
 
 # class to build league and load in DB.
