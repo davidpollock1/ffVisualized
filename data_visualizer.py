@@ -107,8 +107,65 @@ def get_position_rank_one_id(position):
         print(f"Exception occurred: {e}")
 
 
+def get_top_scorer_per_team():
+
+    stmt = select(Player_stats.__table__)
+
+    try:
+        with session:
+            data = session.execute(stmt).fetchall()
+            df = pd.DataFrame(data)
+
+        result = df.groupby(['played_for_team_id', 'player_id'])['points'].sum().reset_index()
+        result = result.loc[result.groupby('played_for_team_id')['points'].idxmax()]
+
+        return result
+
+    except Exception as e:
+        print(f"Exception occurred: {e}")
+
+
+def plot_player_year_weeks(player_id, ax=None):
+
+    stmt = select(Player_stats.__table__).where(Player_stats.on_bye_week != 1, Player_stats.player_id == f"{player_id}", Player_stats.projected_points > 0)
+
+    player_stmt = select(Players.__table__).where(Players.id == f"{player_id}")
+
+    with session:
+        data = session.execute(stmt).fetchall()
+        player = session.execute(player_stmt).fetchone()
+        df = pd.DataFrame(data)
+
+    # Add a swarm plot to the existing axis
+    swarm_plot = sns.swarmplot(data=df, x='player_id', y='points', ax=ax)
+
+    return ax, player.player_name
+
+
+def build_plot_player_year_weeks():
+    fig, ax = plt.subplots()
+    # df['player_id'].apply(lambda x: plot_player_year_weeks(x)
+    player_names = []
+    df = get_top_scorer_per_team()
+    for player_id in df['player_id']:
+        data = plot_player_year_weeks(player_id, ax)
+        ax = data[0]
+        player_names.append(data[1])
+
+    # Set plot properties and show the final plot
+    ax.set_title("Player By the Weeks")
+    ax.set_xlabel("Week")
+    ax.set_ylabel("Points Scored")
+    ax.set_xticklabels(player_names, rotation=45, ha='right')
+    plt.legend()
+    plt.show()
+
+
 if __name__ == '__main__':
     # plot_player_year(4262921)
     # plot_position_vs_opp_rank("QB")
     # get_position_rank_one_id("QB")
-    top_player_plotted_vs_opp_rank("QB")
+    # top_player_plotted_vs_opp_rank("QB")
+    # df = get_top_scorer_per_team()
+    build_plot_player_year_weeks()
+
